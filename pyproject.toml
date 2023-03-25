@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-out"
+authors = [
+    {name = "RenoirTan"}
+]
+description = "Manage your local git repository mirrors."
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["git", "clone", "mirror", "bare", "backup", "repository", "repositories"]
+license = {text = "MIT License"}
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+dependencies = []
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gitout"]
+
+[tool.setuptools.dynamic.version]
+attr = "gitout._data.VERSION"
