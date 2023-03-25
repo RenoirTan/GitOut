@@ -13,7 +13,14 @@ requires-python = ">=3.7"
 keywords = ["git", "clone", "mirror", "bare", "backup", "repository", "repositories"]
 license = {text = "MIT License"}
 classifiers = [
-    "Programming Language :: Python :: 3"
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+	"Intended Audience :: Developers",
+	"Topic :: Software Development :: Version Control",
+    "Topic :: System :: Archiving :: Backup",
+    "Topic :: System :: Archiving :: Mirroring",
+	"Topic :: Utilities"
 ]
 dependencies = []
 dynamic = ["version"]
