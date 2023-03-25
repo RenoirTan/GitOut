@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 import typing as t
 
+from .path import Filter
 from .service import Settings, Service
 from .github import GithubService
 
@@ -13,6 +14,8 @@ def make_parser() -> ArgumentParser:
     cli.add_argument("-P", "--password")
     cli.add_argument("-T", "--token")
     cli.add_argument("-o", "--out")
+    cli.add_argument("-i", "--include")
+    cli.add_argument("-e", "--exclude")
     cli.add_argument("--list")
     return cli
 
@@ -28,6 +31,8 @@ def get_service(name: str) -> t.Optional[t.Type[Service]]:
 def main():
     cli = make_parser()
     args = cli.parse_args()
+    
+    pfilter = Filter(include=args.include, exclude=args.exclude)
     
     service_type = get_service(args.service)
     if service_type == None:
@@ -46,5 +51,5 @@ def main():
     urls = service.get_clone_urls()
     if urls == None:
         raise ValueError("No clone urls found.")
-    for url in urls:
+    for url in filter(pfilter, urls):
         print(url)
