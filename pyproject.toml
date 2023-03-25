@@ -22,8 +22,13 @@ classifiers = [
     "Topic :: System :: Archiving :: Mirroring",
 	"Topic :: Utilities"
 ]
-dependencies = []
+dependencies = [
+    "PyGithub>=1.58.1"
+]
 dynamic = ["version"]
+
+[project.scripts]
+gitout-mirror = "gitout.mirror:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
