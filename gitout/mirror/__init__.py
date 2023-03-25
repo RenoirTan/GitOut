@@ -1,1 +1,1 @@
-from .mirror import main
+from ._cli import main
