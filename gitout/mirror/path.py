@@ -1,11 +1,14 @@
 import re
 import typing as t
-from urllib.parse import ParseResult
+from urllib.parse import ParseResult, urlparse
 
 class Filter(object):
     def __init__(self, includes: t.Iterable[str] = [], excludes: t.Iterable[str] = []) -> None:
         self.includes = [re.compile(i) for i in includes]
         self.excludes = [re.compile(e) for e in excludes]
+        
+    def __repr__(self) -> str:
+        return f"Filter(includes={repr(self.includes)}, excludes={repr(self.excludes)})"
     
     def __call__(self, path: str) -> bool:
         return self.ok(path)
@@ -21,9 +24,12 @@ class Filter(object):
     
     def ok(self, path: str) -> bool:
         if self._excludes(path):
-            return True
+            return False
         else:
             return self._includes(path)
     
     def filter(self, urls: t.Iterable[ParseResult]) -> t.Iterator[ParseResult]:
         return filter(lambda u: self.ok(u.path), urls)
+    
+    def filter_str_urls(self, urls: t.Iterable[str]) -> t.Iterator[str]:
+        return filter(lambda u: self.ok(urlparse(u).path), urls)

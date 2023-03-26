@@ -47,11 +47,12 @@ def main():
         list=args.list
     )
     service = service_type(settings)
+    service.set_filter(pfilter)
     service.setup()
     service.request()
     
     urls = service.get_clone_urls()
     if urls == None:
         raise ValueError("No clone urls found.")
-    for url in pfilter.filter(map(urlparse, urls)):
+    for url in urls:
         print(url)

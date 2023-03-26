@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import typing as t
 
+from .path import Filter
+
 @dataclass
 class Settings(object):
     username: t.Optional[str]
@@ -13,6 +15,9 @@ class Settings(object):
 class Service(object):
     def __init__(self, settings: Settings, *args, **kwargs) -> None:
         self.settings = settings
+    
+    def set_filter(self, pfilter: Filter) -> None:
+        pass
     
     def setup(self) -> None:
         pass
