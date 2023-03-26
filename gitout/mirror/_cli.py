@@ -14,8 +14,8 @@ def make_parser() -> ArgumentParser:
     cli.add_argument("-P", "--password")
     cli.add_argument("-T", "--token")
     cli.add_argument("-o", "--out")
-    cli.add_argument("-i", "--include")
-    cli.add_argument("-e", "--exclude")
+    cli.add_argument("-i", "--include", action="append", default=[])
+    cli.add_argument("-e", "--exclude", action="append", default=[])
     cli.add_argument("--list")
     return cli
 
@@ -31,8 +31,9 @@ def get_service(name: str) -> t.Optional[t.Type[Service]]:
 def main():
     cli = make_parser()
     args = cli.parse_args()
+    print(args)
     
-    pfilter = Filter(include=args.include, exclude=args.exclude)
+    pfilter = Filter(includes=args.include, excludes=args.exclude)
     
     service_type = get_service(args.service)
     if service_type == None:

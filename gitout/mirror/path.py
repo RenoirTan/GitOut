@@ -2,16 +2,24 @@ import re
 import typing as t
 
 class Filter(object):
-    def __init__(self, include: t.Optional[str]=None, exclude: t.Optional[str]=None) -> None:
-        self.include = re.compile(r".*" if include is None else include)
-        self.exclude = None if exclude == None else re.compile(exclude)
+    def __init__(self, includes: t.Iterable[str] = [], excludes: t.Iterable[str] = []) -> None:
+        self.includes = [re.compile(i) for i in includes]
+        self.excludes = [re.compile(e) for e in excludes]
     
     def __call__(self, path: str) -> bool:
         return self.ok(path)
     
+    def _includes(self, path: str) -> bool:
+        return (
+            len(self.includes) == 0 or # match all
+            any(map(lambda r: r.search(path) is not None, self.includes))
+        )
+    
+    def _excludes(self, path: str) -> bool:
+        return any(map(lambda r: r.search(path) is not None, self.excludes))
+    
     def ok(self, path: str) -> bool:
-        # if excluded, no
-        # if included, yes
-        if self.exclude is not None and self.exclude.search(path) is not None:
-            return False
-        return self.include.search(path) is not None
+        if self._excludes(path):
+            return True
+        else:
+            return self._includes(path)
