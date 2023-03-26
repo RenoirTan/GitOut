@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import typing as t
+from urllib.parse import urlparse
 
 from .path import Filter
 from .service import Settings, Service
@@ -52,5 +53,5 @@ def main():
     urls = service.get_clone_urls()
     if urls == None:
         raise ValueError("No clone urls found.")
-    for url in filter(pfilter, urls):
+    for url in pfilter.filter(map(urlparse, urls)):
         print(url)

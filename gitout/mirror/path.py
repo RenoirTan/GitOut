@@ -1,5 +1,6 @@
 import re
 import typing as t
+from urllib.parse import ParseResult
 
 class Filter(object):
     def __init__(self, includes: t.Iterable[str] = [], excludes: t.Iterable[str] = []) -> None:
@@ -23,3 +24,6 @@ class Filter(object):
             return True
         else:
             return self._includes(path)
+    
+    def filter(self, urls: t.Iterable[ParseResult]) -> t.Iterator[ParseResult]:
+        return filter(lambda u: self.ok(u.path), urls)
