@@ -1,6 +1,6 @@
 import typing as t
 
-from github import Github
+from github import Github as _Github # prevent confusion
 
 from .service import Settings, Service
 
@@ -10,7 +10,7 @@ class GithubService(Service):
     
     def setup(self) -> None:
         self.validate()
-        self.g = Github(login_or_token=self.settings.token)
+        self.g = _Github(login_or_token=self.settings.token)
     
     def validate(self) -> None:
         if self.settings.token is None:
