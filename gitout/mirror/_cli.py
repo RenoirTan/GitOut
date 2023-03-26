@@ -10,14 +10,14 @@ DESCRIPTION = "Mirror your repositories from a remote location"
 
 def make_parser() -> ArgumentParser:
     cli = ArgumentParser(description=DESCRIPTION)
-    cli.add_argument("service")
-    cli.add_argument("-U", "--username")
-    cli.add_argument("-P", "--password")
-    cli.add_argument("-T", "--token")
-    cli.add_argument("-o", "--out")
-    cli.add_argument("-i", "--include", action="append", default=[])
-    cli.add_argument("-e", "--exclude", action="append", default=[])
-    cli.add_argument("--list")
+    cli.add_argument("service", help="Name of service to query. For example: github")
+    cli.add_argument("-U", "--username", help="Username used for login")
+    cli.add_argument("-P", "--password", help="Password used for login")
+    cli.add_argument("-T", "--token", help="Token used to access whatever API <SERVICE> needs")
+    cli.add_argument("-o", "--out", help="Output directory")
+    cli.add_argument("-i", "--include", action="append", default=[], help="Paths to include")
+    cli.add_argument("-e", "--exclude", action="append", default=[], help="Paths to exclude")
+    cli.add_argument("--preview", action="store_true", help="Preview action instead of doing it")
     return cli
 
 
