@@ -3,10 +3,10 @@ from urllib.parse import ParseResult
 
 from git.repo import Repo
 
-def get_repo_path(url: ParseResult, outdir: Path) -> Path:
-    url_path = PurePath(url.path)
+def get_repo_path(url: ParseResult, outdir: Path, use_url_path: bool) -> Path:
+    url_path = Path(url.path)
     hostname = "git" if url.hostname is None else url.hostname
-    repo_name = url_path.name
+    repo_name = str(url_path)[1:] if use_url_path else url_path.name
     return (outdir / hostname) if repo_name == "" else (outdir / repo_name)
 
 

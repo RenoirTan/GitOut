@@ -20,6 +20,12 @@ def make_parser() -> ArgumentParser:
     cli.add_argument("-i", "--include", action="append", default=[], help="Paths to include")
     cli.add_argument("-e", "--exclude", action="append", default=[], help="Paths to exclude")
     cli.add_argument("--preview", action="store_true", help="Preview action instead of doing it")
+    cli.add_argument(
+        "-Y",
+        "--use-url-path",
+        action="store_true",
+        help="Use the URL path as the repo path."
+    )
     return cli
 
 
@@ -59,7 +65,7 @@ def main():
     outdir: str = "." if args.out == "" else args.out
     for url in urls:
         print(f"Cloning from {url}")
+        repo_path = get_repo_path(urlparse(url), Path(outdir), args.use_url_path)
+        print(f"  to {repo_path}")
         if not args.preview:
-            repo_path = get_repo_path(urlparse(url), Path(outdir))
-            print(f"  to {repo_path}")
             clone(url, repo_path)
