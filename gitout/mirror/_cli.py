@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
@@ -8,23 +8,69 @@ from .path import Filter
 from .service import Settings, Service
 from .github import GithubService
 
-DESCRIPTION = "Mirror your repositories from a remote location"
+DESCRIPTION = "Mirror your repositories from a remote location."
+
+EPILOG = """\
+Examples
+--------
+
+  # --include flag tells gitout-mirror to backup repos whose name start with
+  # 'A' or 'a'.
+  gitout-mirror github --token ghp_... --out ~/backups/ --include '/[Aa][^/]*/?$'
+"""
 
 def make_parser() -> ArgumentParser:
-    cli = ArgumentParser(description=DESCRIPTION)
+    cli = ArgumentParser(
+        description=DESCRIPTION,
+        epilog=EPILOG,
+        formatter_class=RawDescriptionHelpFormatter
+    )
     cli.add_argument("service", help="Name of service to query. For example: github")
-    cli.add_argument("-U", "--username", help="Username used for login")
-    cli.add_argument("-P", "--password", help="Password used for login")
-    cli.add_argument("-T", "--token", help="Token used to access whatever API <SERVICE> needs")
-    cli.add_argument("-o", "--out", help="Output directory")
-    cli.add_argument("-i", "--include", action="append", default=[], help="Paths to include")
-    cli.add_argument("-e", "--exclude", action="append", default=[], help="Paths to exclude")
-    cli.add_argument("--preview", action="store_true", help="Preview action instead of doing it")
     cli.add_argument(
-        "-Y",
+        "-u",
+        "--username",
+        help="Username used for login. Use --token instead if <service> requires it."
+    )
+    cli.add_argument(
+        "-p",
+        "--password",
+        help="Password used for login. Use --token instead if <service> requires it."
+    )
+    cli.add_argument("-t", "--token", help="Token used to access whatever API <service> needs.")
+    cli.add_argument(
+        "-o",
+        "--out",
+        default=".",
+        help="Output directory. All repos mirrored will be stored here."
+    )
+    cli.add_argument(
+        "-i",
+        "--include",
+        action="append",
+        default=[],
+        help="List of regex patterns to determine whether to include a repo based on its URL path. \
+All repos are included by default (i.e. r'.*' implied)."
+    )
+    cli.add_argument(
+        "-e",
+        "--exclude",
+        action="append",
+        default=[],
+        help="List of regex patterns to determine whether to exclude a repo based on its URL path. \
+If the repo's path matches an exclude pattern, that repo will be excluded from mirroring even if \
+it matches one of the include patterns."
+    )
+    cli.add_argument(
+        "-y",
         "--use-url-path",
         action="store_true",
         help="Use the URL path as the repo path."
+    )
+    cli.add_argument(
+        "-w",
+        "--preview",
+        action="store_true",
+        help="Preview actions instead of doing them."
     )
     return cli
 
