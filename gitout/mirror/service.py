@@ -10,7 +10,7 @@ class Settings(object):
     password: t.Optional[str]
     token: t.Optional[str]
     outdir: Path
-    list: bool
+    preview: bool
 
 class Service(object):
     def __init__(self, settings: Settings, *args, **kwargs) -> None:

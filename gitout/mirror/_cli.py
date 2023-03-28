@@ -1,7 +1,9 @@
 from argparse import ArgumentParser
+from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
 
+from .clone import get_repo_path, clone
 from .path import Filter
 from .service import Settings, Service
 from .github import GithubService
@@ -44,7 +46,7 @@ def main():
         password=args.password,
         token=args.token,
         outdir=args.out,
-        list=args.list
+        preview=args.preview
     )
     service = service_type(settings)
     service.set_filter(pfilter)
@@ -54,5 +56,10 @@ def main():
     urls = service.get_clone_urls()
     if urls == None:
         raise ValueError("No clone urls found.")
+    outdir: str = "." if args.out == "" else args.out
     for url in urls:
-        print(url)
+        print(f"Cloning from {url}")
+        if not args.preview:
+            repo_path = get_repo_path(urlparse(url), Path(outdir))
+            print(f"  to {repo_path}")
+            clone(url, repo_path)

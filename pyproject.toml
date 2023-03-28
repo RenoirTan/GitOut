@@ -23,7 +23,8 @@ classifiers = [
 	"Topic :: Utilities"
 ]
 dependencies = [
-    "PyGithub>=1.58.1"
+    "PyGithub>=1.58.1",
+    "GitPython>=3.1.31"
 ]
 dynamic = ["version"]
 
