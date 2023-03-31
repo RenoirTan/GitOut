@@ -1,4 +1,7 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from pathlib import Path
+
+from .walker import Walker
 
 DESCRIPTION = "Update all bare repositories in a directory with git fetch."
 EPILOG = ""
@@ -47,3 +50,8 @@ it matches one of the include patterns."
 
 def main():
     cli = make_parser()
+    args = cli.parse_args()
+    
+    working_dir = Path(args.directory).absolute()
+    for d in Walker(working_dir):
+        print(d)
