@@ -3,8 +3,11 @@ from pathlib import Path
 import typing as t
 
 class Walker(object):
-    def __init__(self, start: Path) -> None:
-        self.next_dirs: t.List[Path] = [start]
+    def __init__(
+        self,
+        starting_dirs: t.List[Path]
+    ) -> None:
+        self.next_dirs: t.List[Path] = starting_dirs
         self.visited: t.Set[Path] = set()
     
     def __iter__(self) -> Walker:

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
+import typing as t
 
 from .walker import Walker
 
@@ -13,9 +14,11 @@ def make_parser() -> ArgumentParser:
         formatter_class=RawDescriptionHelpFormatter
     )
     cli.add_argument(
-        "directory",
-        default=".",
-        help="Directory where the repositories are stored."
+        "directories",
+        action="append",
+        nargs="*",
+        type=Path,
+        help="Directories where the repositories are stored."
     )
     cli.add_argument(
         "-r",
@@ -52,6 +55,11 @@ def main():
     cli = make_parser()
     args = cli.parse_args()
     
-    working_dir = Path(args.directory).absolute()
-    for d in Walker(working_dir):
+    # argparse 'append' behaviour stores list of lists,
+    # cannot use 'extend' because we are targetting python 3.7
+    directories: t.List[Path] = args.directories[0]
+    print(directories)
+    if len(directories) == 0:
+        directories.append(Path("."))
+    for d in Walker(directories):
         print(d)
