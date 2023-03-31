@@ -3,8 +3,8 @@ from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
 
+from gitout.path import Filter
 from .clone import get_repo_path, clone
-from .path import Filter
 from .service import Settings, Service
 from .github import GithubService
 

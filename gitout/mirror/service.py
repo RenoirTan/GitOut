@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import typing as t
 
-from .path import Filter
+from gitout.path import Filter
 
 @dataclass
 class Settings(object):

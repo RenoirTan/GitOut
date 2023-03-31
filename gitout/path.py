@@ -1,3 +1,4 @@
+from pathlib import PurePath
 import re
 import typing as t
 from urllib.parse import ParseResult, urlparse
@@ -28,7 +29,10 @@ class Filter(object):
         else:
             return self._includes(path)
     
-    def filter(self, urls: t.Iterable[ParseResult]) -> t.Iterator[ParseResult]:
+    def filter_paths(self, paths: t.Iterable[PurePath]) -> t.Iterator[PurePath]:
+        return filter(lambda p: self.ok(str(p)), paths)
+    
+    def filter_parsed_urls(self, urls: t.Iterable[ParseResult]) -> t.Iterator[ParseResult]:
         return filter(lambda u: self.ok(u.path), urls)
     
     def filter_str_urls(self, urls: t.Iterable[str]) -> t.Iterator[str]:

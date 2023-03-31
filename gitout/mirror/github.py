@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from github import Github as _Github # prevent confusion
 
-from .path import Filter
+from gitout.path import Filter
 from .service import Settings, Service
 
 class GithubService(Service):
