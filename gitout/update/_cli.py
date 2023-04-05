@@ -61,5 +61,5 @@ def main():
     print(directories)
     if len(directories) == 0:
         directories.append(Path("."))
-    for d in Walker(directories):
-        print(d)
+    for r in Walker(directories, args.recursive):
+        print(r.working_dir)
