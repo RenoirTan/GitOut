@@ -2,6 +2,8 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
 import typing as t
 
+from git.repo import Repo
+
 from .walker import Walker
 
 DESCRIPTION = "Update all bare repositories in a directory with git fetch."
@@ -51,6 +53,16 @@ it matches one of the include patterns."
     return cli
 
 
+def update(repo: Repo) -> int:
+    print(f"Updating {repo.working_dir}")
+    count = 0
+    for remote in repo.remotes:
+        print(f"    {remote.name} -> {remote.url}")
+        count += 1
+        # remote.fetch()
+    return count
+
+
 def main():
     cli = make_parser()
     args = cli.parse_args()
@@ -61,5 +73,9 @@ def main():
     print(directories)
     if len(directories) == 0:
         directories.append(Path("."))
+    repo_count = 0
+    remote_count = 0
     for r in Walker(directories, args.recursive):
-        print(r.working_dir)
+        remote_count += update(r)
+        repo_count += 1
+    print(f"Updated {repo_count} repositories and fetched {remote_count} remotes.")
