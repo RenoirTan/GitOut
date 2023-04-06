@@ -59,7 +59,7 @@ def update(repo: Repo) -> int:
     for remote in repo.remotes:
         print(f"    {remote.name} -> {remote.url}")
         count += 1
-        # remote.fetch()
+        remote.fetch(verbose=True)
     return count
 
 
