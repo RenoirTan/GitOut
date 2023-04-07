@@ -1,8 +1,10 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
+import re
 import typing as t
 
 from git.repo import Repo
+from tqdm import tqdm
 
 from .walker import Walker
 
@@ -53,11 +55,16 @@ it matches one of the include patterns."
     return cli
 
 
+def confirm() -> bool:
+    res = input("These repositories will be updated. Do you want to continue? [y/N] ")
+    return re.match(r"^\s*[yY]\s*$", res) is not None
+
+
 def update(repo: Repo) -> int:
-    print(f"Updating {repo.working_dir}")
+    tqdm.write(f"Updating {repo.working_dir}")
     count = 0
     for remote in repo.remotes:
-        print(f"    {remote.name} -> {remote.url}")
+        tqdm.write(f"    {remote.name} -> {remote.url}")
         count += 1
         remote.fetch(verbose=True)
     return count
@@ -73,9 +80,14 @@ def main():
     print(directories)
     if len(directories) == 0:
         directories.append(Path("."))
-    repo_count = 0
+    repos: t.List[Repo] = list(Walker(directories, args.recursive))
+    print("Found these repositories:")
+    for repo in repos:
+        print(f" -> {repo.working_dir}")
+    if not confirm():
+        print("Aborting!")
+        return
     remote_count = 0
-    for r in Walker(directories, args.recursive):
+    for r in tqdm(repos, unit="repo"):
         remote_count += update(r)
-        repo_count += 1
-    print(f"Updated {repo_count} repositories and fetched {remote_count} remotes.")
+    print(f"Updated {len(repos)} repositories and fetched {remote_count} remotes.")
