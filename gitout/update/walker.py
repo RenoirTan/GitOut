@@ -32,6 +32,8 @@ class Walker(t.Iterator, t.Iterable):
             # Skip already visited dirs and non-directories
             if working_dir in self.visited or not working_dir.is_dir():
                 continue
+            # Set this work dir as visited
+            self.visited.add(working_dir)
             # Repo object, None if working_dir is not a repo
             try:
                 repo = Repo(working_dir)
@@ -40,10 +42,8 @@ class Walker(t.Iterator, t.Iterable):
             # Push subdirectories of work dir
             if (self.recursive >= 1 and repo is None) or (self.recursive >= 2):
                 self._extend(working_dir)
-            # Set this work dir as visited
-            self.visited.add(working_dir)
             # Return repo
-            if repo is not None:
+            if repo is not None and self.pfilter.ok(str(working_dir)):
                 return repo
         raise StopIteration
     

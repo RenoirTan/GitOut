@@ -6,6 +6,7 @@ import typing as t
 from git.repo import Repo
 from tqdm import tqdm
 
+from gitout.path import Filter
 from .walker import Walker
 
 DESCRIPTION = "Update all bare repositories in a directory with git fetch."
@@ -104,7 +105,10 @@ def main():
     print(directories)
     if len(directories) == 0:
         directories.append(Path("."))
-    repos: t.List[Repo] = list(Walker(directories, args.recursive))
+    
+    pfilter = Filter(includes=args.include, excludes=args.exclude)
+    
+    repos: t.List[Repo] = list(Walker(directories, args.recursive, pfilter))
     print("Found these repositories:")
     for repo in repos:
         print(f" -> {repo.working_dir}")
