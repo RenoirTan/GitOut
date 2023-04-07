@@ -48,3 +48,22 @@ gitout-mirror github -t ghp_<token> -o ~/backups -w
 # pass the `-y` flag.
 gitout-mirror github -t ghp_<token> -o ~/backups -y
 ```
+
+## Update
+
+`gitout-update` updates your repositories by fetching all remotes in it.
+
+```bash
+# Update repositories stored under the present working directory.
+gitout-update
+
+# Update repositories but automatically assumes yes for prompts.
+gitout-update -y
+
+# Update repositories under these 2 folders.
+gitout-update ~/Code/remote/github.com ~/Code/remote/gitlab.com
+
+# Update repositories under these 2 directories as well as all of their
+# descendents.
+gitout-update ~/Code/remote/github.com ~/Code/remote/gitlab.com -r
+```
