@@ -14,6 +14,7 @@ class Walker(t.Iterator, t.Iterable):
         recursive: int,
         path_filter: t.Optional[Filter] = None
     ) -> None:
+        self.starting_dirs: t.Set[Path] = set(starting_dirs)
         self.next_dirs: t.List[Path] = starting_dirs
         self.visited: t.Set[Path] = set()
         # self.recursive:
@@ -40,7 +41,11 @@ class Walker(t.Iterator, t.Iterable):
             except InvalidGitRepositoryError as e:
                 repo = None
             # Push subdirectories of work dir
-            if (self.recursive >= 1 and repo is None) or (self.recursive >= 2):
+            if (
+                (working_dir in self.starting_dirs) or
+                (self.recursive >= 1 and repo is None) or
+                (self.recursive >= 2)
+            ):
                 self._extend(working_dir)
             # Return repo
             if repo is not None and self.pfilter.ok(str(working_dir)):

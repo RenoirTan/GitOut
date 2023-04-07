@@ -30,7 +30,7 @@ def make_parser() -> ArgumentParser:
         "--recursive",
         action="count",
         default=0,
-        help="Git fetch repositories in <directory> recursively. \
+        help="Search for repositories in <directory> recursively. \
 If -r is passed, gitout-update assumes that a directory that is a git \
 repository will not contain repository mirrors in any of its subdirectories. \
 If -rr is passed, gitout-update will git fetch all repositories, even if they \
