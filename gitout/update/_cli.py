@@ -52,21 +52,45 @@ All repos are included by default (i.e. r'.*' implied)."
 If the repo's path matches an exclude pattern, that repo will be excluded from even if \
 it matches one of the include patterns."
     )
+    cli.add_argument(
+        "-s",
+        "--skip",
+        action="store_true",
+        help="Skip a remote if an error occurs while fetching it."
+    )
+    cli.add_argument(
+        "-y",
+        "--yes",
+        "--assume-yes",
+        action="store_true",
+        help="Automatically assumes 'yes' as answer to the prompt asking whether to update the \
+of repos."
+    )
     return cli
 
 
-def confirm() -> bool:
+def confirm(assume_yes: bool = False) -> bool:
+    if assume_yes:
+        return True
     res = input("These repositories will be updated. Do you want to continue? [y/N] ")
     return re.match(r"^\s*[yY]\s*$", res) is not None
 
 
-def update(repo: Repo) -> int:
+def update(repo: Repo, skip_error: bool = False) -> int:
     tqdm.write(f"Updating {repo.working_dir}")
     count = 0
     for remote in repo.remotes:
         tqdm.write(f"    {remote.name} -> {remote.url}")
-        count += 1
-        remote.fetch(verbose=True)
+        try:
+            remote.fetch(verbose=True)
+        except Exception as e:
+            if skip_error:
+                tqdm.write("An error occurred trying to fetch the remote!")
+                tqdm.write(str(e))
+            else:
+                raise e
+        else:
+            count += 1
     return count
 
 
@@ -84,10 +108,10 @@ def main():
     print("Found these repositories:")
     for repo in repos:
         print(f" -> {repo.working_dir}")
-    if not confirm():
+    if not confirm(args.yes):
         print("Aborting!")
         return
     remote_count = 0
     for r in tqdm(repos, unit="repo"):
-        remote_count += update(r)
+        remote_count += update(r, args.skip)
     print(f"Updated {len(repos)} repositories and fetched {remote_count} remotes.")
