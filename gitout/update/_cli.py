@@ -102,7 +102,6 @@ def main():
     # argparse 'append' behaviour stores list of lists,
     # cannot use 'extend' because we are targetting python 3.7
     directories: t.List[Path] = args.directories[0]
-    print(directories)
     if len(directories) == 0:
         directories.append(Path("."))
     
