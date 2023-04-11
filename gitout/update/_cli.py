@@ -5,10 +5,12 @@ import typing as t
 from git.repo import Repo
 from tqdm import tqdm
 
+from gitout._data import VERSION
 from gitout.util import confirm
 from gitout.path import Filter
 from .walker import Walker
 
+PROGNAME = "gitout-update"
 DESCRIPTION = "Update all bare repositories in a directory with git fetch."
 EPILOG = ""
 
@@ -18,6 +20,7 @@ def make_parser() -> ArgumentParser:
         epilog=EPILOG,
         formatter_class=RawDescriptionHelpFormatter
     )
+    cli.add_argument("--version", action="version", version=f"{PROGNAME} {VERSION}")
     cli.add_argument(
         "directories",
         action="append",

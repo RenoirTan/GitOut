@@ -3,11 +3,14 @@ from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
 
+from gitout._data import VERSION
 from gitout.util import confirm
 from gitout.path import Filter
 from .clone import get_repo_path, clone
 from .service import Settings, Service
 from .github import GithubService
+
+PROGNAME = "gitout-mirror"
 
 DESCRIPTION = "Mirror your repositories from a remote location."
 
@@ -26,6 +29,7 @@ def make_parser() -> ArgumentParser:
         epilog=EPILOG,
         formatter_class=RawDescriptionHelpFormatter
     )
+    cli.add_argument("--version", action="version", version=f"{PROGNAME} {VERSION}")
     cli.add_argument("service", help="Name of service to query. For example: github")
     cli.add_argument(
         "-u",
