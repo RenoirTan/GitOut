@@ -3,8 +3,6 @@ from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
 
-from tqdm import tqdm
-
 from gitout.util import confirm
 from gitout.path import Filter
 from .clone import get_repo_path, clone
@@ -97,7 +95,6 @@ def get_service(name: str) -> t.Optional[t.Type[Service]]:
 def main():
     cli = make_parser()
     args = cli.parse_args()
-    print(args)
     
     pfilter = Filter(includes=args.include, excludes=args.exclude)
     
@@ -132,7 +129,7 @@ def main():
         print("Aborting!")
         return
     
-    for url in tqdm(urls, unit="repo"):
+    for url in urls:
         print(f"Cloning from {url}")
         repo_path = get_repo_path(urlparse(url), Path(outdir), args.use_url_path)
         print(f"  to {repo_path}")
