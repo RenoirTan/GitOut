@@ -45,8 +45,8 @@ gitout-mirror github -t ghp_<token> -o ~/backups
 gitout-mirror github -t ghp_<token> -o ~/backups -w
 
 # If you want to use the URL path as the local filesystem path for each repo,
-# pass the `-y` flag.
-gitout-mirror github -t ghp_<token> -o ~/backups -y
+# pass the `-z` flag.
+gitout-mirror github -t ghp_<token> -o ~/backups -z
 ```
 
 ## Update
