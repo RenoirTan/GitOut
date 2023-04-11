@@ -1,11 +1,11 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
-import re
 import typing as t
 
 from git.repo import Repo
 from tqdm import tqdm
 
+from gitout.util import confirm
 from gitout.path import Filter
 from .walker import Walker
 
@@ -70,13 +70,6 @@ of repos."
     return cli
 
 
-def confirm(assume_yes: bool = False) -> bool:
-    if assume_yes:
-        return True
-    res = input("These repositories will be updated. Do you want to continue? [y/N] ")
-    return re.match(r"^\s*[yY]\s*$", res) is not None
-
-
 def update(repo: Repo, skip_error: bool = False) -> int:
     tqdm.write(f"Updating {repo.working_dir}")
     count = 0
@@ -111,7 +104,7 @@ def main():
     print("Found these repositories:")
     for repo in repos:
         print(f" -> {repo.working_dir}")
-    if not confirm(args.yes):
+    if not confirm("These repositories will be updated. Do you want to continue?", args.yes):
         print("Aborting!")
         return
     remote_count = 0

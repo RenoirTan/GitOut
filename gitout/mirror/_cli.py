@@ -3,6 +3,9 @@ from pathlib import Path
 import typing as t
 from urllib.parse import urlparse
 
+from tqdm import tqdm
+
+from gitout.util import confirm
 from gitout.path import Filter
 from .clone import get_repo_path, clone
 from .service import Settings, Service
@@ -61,10 +64,18 @@ If the repo's path matches an exclude pattern, that repo will be excluded from m
 it matches one of the include patterns."
     )
     cli.add_argument(
-        "-y",
+        "-z",
         "--use-url-path",
         action="store_true",
         help="Use the URL path as the repo path."
+    )
+    cli.add_argument(
+        "-y",
+        "--yes",
+        "--assume-yes",
+        action="store_true",
+        help="Automatically assumes 'yes' as answer to the prompt asking whether to update the \
+of repos."
     )
     cli.add_argument(
         "-w",
@@ -108,8 +119,20 @@ def main():
     urls = service.get_clone_urls()
     if urls == None:
         raise ValueError("No clone urls found.")
-    outdir: str = "." if args.out == "" else args.out
+    print("Found these repositories:")
+    urls = list(urls)
     for url in urls:
+        print(f" -> {url}")
+    
+    outdir: str = "." if args.out == "" else args.out
+    if not confirm(
+        f"These repositories will be cloned to {outdir}. Do you want to continue?",
+        args.yes
+    ):
+        print("Aborting!")
+        return
+    
+    for url in tqdm(urls, unit="repo"):
         print(f"Cloning from {url}")
         repo_path = get_repo_path(urlparse(url), Path(outdir), args.use_url_path)
         print(f"  to {repo_path}")
