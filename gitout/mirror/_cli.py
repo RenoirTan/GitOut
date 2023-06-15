@@ -85,6 +85,13 @@ of repos."
         action="store_true",
         help="Preview actions instead of doing them."
     )
+    cli.add_argument(
+        "-c",
+        "--continue",
+        action="store_true",
+        dest="no_fail",
+        help="Continue cloning other repositories even if some fail."
+    )
     return cli
 
 
@@ -138,4 +145,11 @@ def main():
         repo_path = get_repo_path(urlparse(url), Path(outdir), args.use_url_path)
         print(f"  to {repo_path}")
         if not args.preview:
-            clone(url, repo_path)
+            try:
+                clone(url, repo_path)
+            except Exception as e:
+                if args.no_fail:
+                    print("An error occurred, -c/--continue, so we skip.")
+                    print(e)
+                else:
+                    raise e
